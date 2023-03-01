@@ -9,19 +9,75 @@
 </template>
 
 <script>
+// export default {
+//   name: 'Auth',
+//   data: () => ({
+//     authData: {
+//       login: '',
+//       password: ''
+//     }
+//   }),
+//   methods: {
+//     buttonClickHandler: function () {
+//       // this.$router.push({ name: 'test' })
+//
+//       if (!this.authData.login && !this.authData.password) alert('Ты дурак ?')
+//     }
+//   }
+// }
+
+
 export default {
   name: 'Auth',
   data: () => ({
+    serverUrl: "http://195.49.210.34/",
     authData: {
       login: '',
-      password: ''
-    }
+      password: '',
+    }, response: {}
   }),
   methods: {
-    buttonClickHandler: function () {
-      // this.$router.push({ name: 'test' })
+    buttonClickHandler: async function () {
+      if (!this.authData.password ) {
+        return alert("Введите данные")
+      }
 
-      if (!this.authData.login && !this.authData.password) alert('Ты дурак ?')
+      const response = await this.sendRequest("user/authorization", "POST", {
+        userData: {
+          login: this.authData.login,
+          password: this.authData.password,
+        }
+      })
+
+      if(response.info.status === "OK" && response.payload.isAuth){
+        // this.$router.push({name:"home"})
+        this.$router.push(({name:"home", params:{id:response.payload.userData[0]._id}}))
+      } else {
+        alert("Login or password isn't correct")
+      }
+      console.log({response})
+      if (response.info.status === "Error") {
+        return alert(response.payload)
+      }
+      // this.$router.push({name: 'test'})
+      // if(response.info.status === "OK"){
+      //
+      // }
+    },
+    sendRequest: async function (path, method, body) {
+      const url = `${this.serverUrl}${path}`
+      const request_config = {
+        method,
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: null
+      }
+      if (method != "GET") request_config.body = JSON.stringify((body))
+
+      const response = await fetch(url, request_config)
+
+      return await response.json()
     }
   }
 }

@@ -1,6 +1,13 @@
 <template>
   <div class="home">
-    <Auth id="auth" />
+    <div class="switcher">
+    <button class="auth" v-on:click="switch_handler(true)">Registration</button>
+    <button class="reg" v-on:click="switch_handler(false)">Authorization</button>
+    </div>
+    <div class="forms">
+    <Auth v-if="!switcher" id="auth" />
+    <Reg v-if="switcher"/>
+    </div>
   </div>
 </template>
 
@@ -14,7 +21,15 @@ export default {
   components: {
     Auth,
     Reg
-  }
+  },
+  data: () => ({
+  switcher:false
+}),
+    methods: {
+    switch_handler: function (isSwitch){
+      this.switcher = isSwitch
+}
+}
 }
 </script>
 
@@ -24,11 +39,27 @@ export default {
   height: 100vh;
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
-  #auth {
-    width: 40%;
-    height: 25%;
-  }
+
+
+  //#auth {
+  //  width: 100%;
+  //  height: 45%;
+  //}
 }
-  
+  .switcher {
+    width: 50%;
+    height: 45px;
+    padding: 8px 16px 8px 16px;
+    & * {
+      width: 25%;
+      cursor: pointer;
+      font-family: sans-serif;
+      font-size: 1.25em;
+      //letter-spacing: 7px;
+    }
+
+  }
+
 </style>
