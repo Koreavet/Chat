@@ -1,8 +1,6 @@
 <template>
 <footer>
   <textarea placeholder="Type your message" v-model="textMessage"></textarea>
-  <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_picture.png" alt="">
-  <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_file.png" alt="">
   <button :disabled="!chatId" class="send_btn" v-on:click="deliveryMessage">Send</button>
 </footer>
 </template>
@@ -63,14 +61,17 @@ export default {
 <style scoped>
  footer{
     height:155px;
-    padding:20px 30px 10px 20px;
+    /* padding:20px 30px 10px 20px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
    footer textarea{
     resize:none;
     border:none;
     display:flex;
     flex-direction: column;
-    width:100%;
+    width:80%;
     height:80px;
     border-radius:3px;
     padding:20px;
@@ -90,8 +91,15 @@ export default {
     font-weight:bold;
     color:#6fbced;
     vertical-align:top;
-    margin-left:333px;
+    /* margin-left:333px; */
     margin-top:5px;
-    display:inline-block;
-  }
+    width: 70px;
+    height: 40px;
+    /* display: flex;
+    align-items: center;
+    flex-direction: center; */
+    display: flex;
+    /* justify-content: flex-start; */
+
+}
 </style>
