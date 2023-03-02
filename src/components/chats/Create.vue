@@ -22,7 +22,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
+import Swal from 'sweetalert2';
 export default {
   name:'createChat',
   data: () => ({
@@ -43,10 +44,9 @@ export default {
       this.$emit('closeModalCreateChat')
     },
     createChatButtonHandler: async function(){
-      if(!this.label) return alert('no label of a Chat')
-      if(!this.description) return alert('no description of a Chat')
-      // if(!this.takeMember) return alert("Please select members!")
-      if(!this.selectedMembers.length < 0) return alert('no Members chosed')
+      if(!this.label) return Swal.fire('No label of a chat')
+      if(!this.description) return Swal.fire('No description of a chat')
+      if(!this.selectedMembers.length < 0) return Swal.fire('No Members chosed')
 
       let data = {
         userId: `${this.$route.params.id}`,
@@ -57,14 +57,13 @@ export default {
 
       const response = await this.sendRequest('chat/create', 'POST', data)
 
-      if(response.info.status === 'Error') return alert(response.payload)
+      if(response.info.status === 'Error') return Swal.fire(response.payload)
 
-      return alert(`Chat ${this.label} is created`)
+      return Swal.fire(`Chat ${this.label} is created`)
     },
     addMemberButtonHandler: async function(){
-      // if(fillteredUser.length) return alert("This user already have")
       if(!this.takeMember)return alert('No friends chose')
-      if(this.selectedMembers.includes(this.takeMember)) return alert('You have been choose this Member')
+      if(this.selectedMembers.includes(this.takeMember)) return Swal.fire('You have been choose this Member')
     
       let selectedMembersIsExist = false;
       let counter = 0;
@@ -74,16 +73,13 @@ export default {
           break 
         }
         if(this.selectedMembers.includes(user.login)) 
-          // return alert (`This user ${user.login} does not exist`)
           counter++
         
       }
-     if (!selectedMembersIsExist) return alert (`This user ${this.takeMember} does not exist`);
-     if(counter !== this.selectedMembers.length) return alert ("This user does not exist")
+     if (!selectedMembersIsExist) return Swal.fire (`This user ${this.takeMember} does not exist`);
+     if(counter !== this.selectedMembers.length) return Swal.fire ("This user does not exist")
       this.selectedMembers.push(this.takeMember)
       this.takeMember = ''
-
-      
     },
     sendRequest: async function(path, method, body){
       const url = `${this.serverUrl}${path}`
@@ -93,6 +89,7 @@ export default {
       } else {
         return (await axios.post(url, body)).data
       }
+
     }
 
   }
@@ -101,23 +98,28 @@ export default {
 
 <style lang="less">
 .containerModale{
-  // height: 500px;
   margin: 0 auto;
-  border: 1px solid whitesmoke;
-  border-radius: 20px;
+  border: 1px solid black;
+  border-radius: 14px;
   position: relative;
-  background-color: rgb(182, 182, 182);
-  // display: none;
+  background:url('https://picsum.photos/1000/1500?image=827'), #1b243b;
+  background-repeat:no-repeat;
+  background-position: top center;
+  background-size: cover;
 }
+
 .addMembers{
   margin-top: 5%;
 }
+
 .closeModale{
   width: 20px;
   height: 20px;
   position: absolute;
   right: 2%;
   top: 2%;
+  color: white;
+  font-weight: 600;
 }
 .closeModale:hover{
   cursor: pointer;
@@ -133,6 +135,10 @@ input{
   background-repeat: no-repeat;
   padding: 12px 20px 12px 40px;
   margin: 5px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  &:hover{
+    outline: none;
+  }
 }
 .addMember{
   width: 30px;
@@ -150,5 +156,10 @@ input{
 }
 .create:hover{
   cursor: pointer;
+}
+.createChat{
+  color: white;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: 300;
 }
 </style>

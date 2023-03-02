@@ -8,6 +8,7 @@
 <script>
 import axios from 'axios';
 import EventBus from '@/EventBus';
+import Swal from 'sweetalert2';
 export default {
   name: "sendMessage", 
   data: () => ({
@@ -27,7 +28,7 @@ export default {
   methods: {
    deliveryMessage: async function (){
     console.log(this.chatId);
-   const send_message_data ={
+    const send_message_data ={
     login: this.login,
     chatId: this.chatId,
     text: this.textMessage
@@ -35,14 +36,10 @@ export default {
    const response = await this.sendRequest("chat/send/text", "POST", send_message_data)
    console.log(response);
    const messageData = response.payload
-
    EventBus.$emit('messageFromMe', messageData)
    EventBus.$emit('updateScroll')
-
-
-
-   if(response.info.status === 'Error') return alert(response.payload)
-
+   if(response.info.status === 'Error') return Swal.fire(response.payload)
+   this.textMessage='';
   },
   
   sendRequest: async function(path, method, body){
@@ -60,8 +57,6 @@ export default {
 
 <style scoped>
  footer{
-    height:155px;
-    /* padding:20px 30px 10px 20px; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -71,12 +66,13 @@ export default {
     border:none;
     display:flex;
     flex-direction: column;
-    width:80%;
-    height:80px;
+    width:88%;
+    height:65px;
     border-radius:3px;
     padding:20px;
     font-size:13px;
     margin-bottom:13px;
+    border: 1px #1b243b solid;
   }
    footer textarea::placeholder{
     color:#ddd;
@@ -89,17 +85,13 @@ export default {
     text-decoration:none;
     text-transform:uppercase;
     font-weight:bold;
-    color:#6fbced;
+    color:#5D6F9D;
     vertical-align:top;
-    /* margin-left:333px; */
-    margin-top:5px;
-    width: 70px;
-    height: 40px;
-    /* display: flex;
-    align-items: center;
-    flex-direction: center; */
+    margin-left:5px;
+    margin-bottom: 12px;
     display: flex;
-    /* justify-content: flex-start; */
-
+    justify-content: center;
+    align-content: center;
+    padding: 5px;
 }
 </style>

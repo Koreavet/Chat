@@ -7,25 +7,22 @@
   :login="user.login" />
   <sendMessage class="sendChat"
     :chatId="currentChat._id"
-    :login="user.login" 
-  />
+    :login="user.login"/>
 </div>
   <div class="createChatModalWrapper" v-if="createChatIsOpen" >
-    <createChat @closeModalCreateChat="closeModalCreateChat" class="createChat"/>
-
+  <createChat @closeModalCreateChat="closeModalCreateChat" class="createChat"/>
   </div>
 </div>
 </template>
 
 <script>
-
 import ChartList from "@/components/chats/List.vue";
 import createChat from "@/components/chats/Create.vue"
 import viewList from "@/components/chats/View.vue"
 import sendMessage from "@/components/chats/SendMessage.vue";
 import axios from "axios";
 import EventBus from '@/EventBus.js';
-
+import Swal from 'sweetalert2';
 
 
 export default {
@@ -53,11 +50,7 @@ export default {
       this.createChatIsOpen = update;
     },
     choose_chat: async function(chat_id){
-      // if(this.intervalId){
-      //   clearInterval(this.intervalId);
-      // }
       this.currentChat = (await this.sendRequest(`chat/${chat_id}`,'GET')).payload[0]
-      // this.intervalId = setInterval(() => this.update_chat_data(chat_id),1000);
     },
     update_chat_data: async function(chat_id){
       const oldChatData = JSON.parse(JSON.stringify(this.currentChat))
@@ -68,25 +61,14 @@ export default {
       }
     },
     notifyMe: function(text){
-      if (!("Notification" in window)) {
-    // Check if the browser supports notifications
-    alert("This browser does not support desktop notification");
+    if (!("Notification" in window)) {
+    Swal.fire("This browser does not support desktop notification");
   } else if (Notification.permission === "granted") {
-    // Check whether notification permissions have already been granted;
-    // if so, create a notification
     const notification = new Notification(text);
-
-
-
-
-    // …
   } else if (Notification.permission !== "denied") {
-    // We need to ask the user for permission
     Notification.requestPermission().then((permission) => {
-      // If the user accepts, let's create a notification
       if (permission === "granted") {
         const notification = new Notification(text);
-        // …
       }
     })
     }
@@ -102,10 +84,8 @@ export default {
     },
     connect: async function () {
       this.webSoket = new WebSocket(`ws://195.49.210.34/ws?login=${this.user.login}`) ;
-
       this.webSoket.onopen = async (event) => {
       console.log({event});
-      
       this.webSoket.onmessage = async (msg) => {
         const serverData = JSON.parse(msg.data)
         console.log(serverData);
@@ -117,7 +97,6 @@ export default {
         else if (serverData.type === 'newChat') {
           EventBus.$emit('newChat', serverData.payload)
         }
-        // await this.update_chat_data(serverData.payload.chatId)
         console.log({serverData});
       }
     }
@@ -148,7 +127,6 @@ export default {
 }
 </script>
 
-
 <style scoped lang="less">
 .createChatModalWrapper {
   width: 100vw;
@@ -158,9 +136,9 @@ export default {
   align-items: center;
   position: fixed;
 }
-
 .wrapper{
   display: flex;
+  justify-content: center;
 }
 .message{
   width: 80%;
